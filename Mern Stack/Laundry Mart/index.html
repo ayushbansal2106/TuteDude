@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laundry Mart</title>
+</head>
+
+<body>
+  <header>
+    <h1>Welcome to Laundry Mart</h1>
+  </header>
+
+  <main>
+    <section id="about">
+      <p>Welcome to Laundry Mart, your one-stop solution for all your laundry needs. Our dedicated team ensures
+        top-notch service, providing a hassle-free and efficient laundry experience. With a focus on quality and
+        customer satisfaction, we take care of your garments as if they were our own.</p>
+    </section>
+
+    <section id="logo">
+      <img src="https://t3.ftcdn.net/jpg/06/27/91/98/360_F_627919863_5FibESm3DEK3xvB8jGJSwg5lbQhUexlr.jpg"
+        alt="Laundry Mart logo">
+    </section>
+
+    <section id="services">
+    <h2>Our Services</h2>
+    <ul>
+      <li>Washing and Drying</li>
+      <li>Ironing and Folding</li>
+      <li>Dry Cleaning</li>
+      <li>Pickup and Delivery</li>
+      <li>Stain removal</li>
+      <li>Express Service</li>
+      <li>Special garment care</li>
+      <li>And more..</li>
+    </ul>
+    </section>
+
+    <section id="price">
+      <h2>Pricing</h2>
+      <table border="1">
+        <tr>
+          <th>Service</th>
+          <th>Price per item</th>
+        </tr>
+        <tr>
+          <td>Washing and Drying</td>
+          <td>₹10</td>
+        </tr>
+        <tr>
+          <td>Ironing and Folding</td>
+          <td>₹5</td>
+        </tr>
+        <tr>
+          <td>Dry Cleaning</td>
+          <td>₹15</td>
+        </tr>
+        <tr>
+          <td>Pickup and Delivery</td>
+          <td>₹3 per trip</td>
+        </tr>
+        <tr>
+          <td>Stain removal</td>
+          <td>₹5</td>
+        </tr>
+        <tr>
+          <td>Express Service</td>
+          <td>₹25 extra</td>
+        </tr>
+      </table>
+    </section>
+
+    <section id="bookNow">
+      <h2>Book Now</h2>
+      <form action="">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="contact">Phone:</label>
+        <input type="tel" id="contact" name="contact" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="service">Select Service:</label>
+        <select id="service" name="service" required>
+          <option value=""></option>
+          <option value="washing">Washing and Drying</option>
+          <option value="ironing">Ironing and Folding</option>
+          <option value="drycleaning">Dry Cleaning</option>
+          <option value="pickup">Pickup and Delivery</option>
+          <option value="stainremoval">Stain removal</option>
+          <option value="express">Express Service</option>
+        </select>
+
+        <label for="items">Number of Items:</label>
+        <input type="number" id="items" name="items" min="1" required>
+
+        <input type="submit" value="Book Now">
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>Contact us at: <a href="mailto:info@laundrymart.com">info@laundrymart.com</a></p>
+  </footer>
+</body>
+
+</html>
