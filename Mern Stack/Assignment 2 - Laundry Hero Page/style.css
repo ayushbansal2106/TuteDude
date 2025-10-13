@@ -1,0 +1,118 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f8f9fa;
+    height: 100vh;
+    overflow: hidden
+}
+
+#navbar {
+    display: flex;
+    justify-content: space-between;
+    margin: 2vh 8vw;
+    align-items: center;
+    height: 10vh;
+}
+
+#logo {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+#nav-links ul{
+    display: flex;
+    list-style: none;
+    gap: 20px;
+    align-items: center;
+}
+
+#nav-links ul li {
+    color: #8b949e;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+#nav-links ul li:hover {
+    color: #06a8ff;
+}
+
+#username {
+    background-color: #e8f7ff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: #06a8ff;
+    font-weight: 500;
+}
+
+#hero-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 8vw;
+    gap: 4vw;
+    height: 85vh;
+}
+
+#leftDiv {
+    flex: 1;
+    max-width: 500px;
+}
+
+#hero-section h1 {
+    font-size: 3.5vw;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1vh;
+}
+
+#firstHeading {
+    color: #2c3e50;
+}
+
+#secondHeading {
+    color: #06a8ff;
+}
+
+#hero-section p {
+    color: #8b949e;
+    margin: 2vh 0 3vh 0;
+    line-height: 1.6;
+    font-size: 1.2vw;
+}
+
+#booking{
+    background-color: #06a8ff;
+    color: white;
+    padding: 16px 32px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#booking:hover {
+    background-color: #0591e3;
+    transform: translateY(-2px);
+}
+
+#rightdiv {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#washing-machine {
+    width: 30vw;
+    height: auto;
+    max-width: 100%;
+    max-height: 70vh;
+}
