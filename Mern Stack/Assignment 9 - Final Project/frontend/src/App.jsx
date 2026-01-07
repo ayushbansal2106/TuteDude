@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import AddVisitor from './pages/AddVisitor';
 import ScanPass from './pages/ScanPass';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
   const user = localStorage.getItem('token');
@@ -14,6 +15,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         {/* If user is logged in, show Dashboard, else force them to Login */}
         <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/add-visitor" element={user ? <AddVisitor /> : <Navigate to="/login" />} />
