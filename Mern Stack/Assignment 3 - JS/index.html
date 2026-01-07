@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Greeting Page</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header id="welcomeMessage">Hello</header>
+
+<div class="main-container">
+
+    <div class="color-box-container">
+        <div class="color-box" onclick="applyColor(this, 'red')">Red</div>
+        <div class="color-box" onclick="applyColor(this, 'blue')">Blue</div>
+        <div class="color-box" onclick="applyColor(this, 'green')">Green</div>
+        <div class="color-box" onclick="applyColor(this, 'yellow')">Yellow</div>
+    </div>
+
+    <div class="input-section">
+        <input type="text" id="userName" placeholder="Enter your name">
+        <button onclick="showGreeting()">Greet</button>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
