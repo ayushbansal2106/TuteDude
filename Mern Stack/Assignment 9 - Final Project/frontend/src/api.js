@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: 'https://visitor-backend-c5gm.onrender.com',
 });
 
 // This automatically adds the token to requests if we are logged in
