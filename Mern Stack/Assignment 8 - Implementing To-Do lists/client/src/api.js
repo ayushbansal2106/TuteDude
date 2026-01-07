@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api/todos',
+  baseURL: 'https://todo-backend-fw1k.onrender.com/api/todos',
 });
 
 export const getTodos = async () => {
