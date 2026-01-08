@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react'; // <--- 1. Added useRef
-import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
+import React, { useState, useRef } from 'react';
+import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap'; // <--- Added Spinner
 import QRCode from 'react-qr-code';
 import Webcam from 'react-webcam';
 import { useReactToPrint } from 'react-to-print';
@@ -12,26 +12,33 @@ const AddVisitor = () => {
   const [purpose, setPurpose] = useState('');
   const [photo, setPhoto] = useState(null);
   const [generatedQR, setGeneratedQR] = useState(null);
+  const [loading, setLoading] = useState(false); // <--- New Loading State
 
   const webcamRef = useRef(null);
-  const componentRef = useRef(); // <--- Reference for PDF area
+  const componentRef = useRef();
 
-  // Function to capture photo
+  // OPTIMIZATION: Limit camera resolution to make upload fast (480p is enough for badges)
+  const videoConstraints = {
+    width: 480,
+    height: 360,
+    facingMode: "user"
+  };
+
   const capture = React.useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     setPhoto(imageSrc);
   }, [webcamRef]);
 
-  // Function to download PDF - Fixed Logic
   const handlePrint = useReactToPrint({
-    contentRef: componentRef, // Updated for newer react-to-print versions
+    contentRef: componentRef,
     documentTitle: 'Visitor_Pass',
   });
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    setLoading(true); // <--- Start Loading
+
     try {
-      // <--- 2. Sending 'photo' in the body now
       const { data } = await API.post('/visitors', { 
         name, 
         email, 
@@ -40,18 +47,19 @@ const AddVisitor = () => {
         photo 
       });
       
-      alert('Visitor Added & Pass Generated!');
       setGeneratedQR(JSON.stringify({ id: data._id, name: data.name }));
+      alert('Visitor Added!');
     } catch (error) {
       console.error(error);
       alert('Error adding visitor: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setLoading(false); // <--- Stop Loading (Success or Fail)
     }
   };
 
   return (
     <Container className="mt-4">
       <Row>
-        {/* LEFT: Form & Camera */}
         <Col md={6}>
           <h3>1. Enter Details & Capture Photo</h3>
           <Form onSubmit={submitHandler}>
@@ -72,43 +80,65 @@ const AddVisitor = () => {
                 <option value="">Select Purpose...</option>
                 <option value="Meeting">Meeting</option>
                 <option value="Interview">Interview</option>
+                <option value="Delivery">Delivery</option>
               </Form.Select>
             </Form.Group>
 
-            {/* Webcam Section */}
             <div className="mb-3 border p-2 text-center">
               {photo ? (
-                <img src={photo} alt="Taken" style={{ width: '200px' }} />
+                <img src={photo} alt="Taken" style={{ width: '100%', maxWidth: '300px' }} />
               ) : (
                 <Webcam
                   audio={false}
                   ref={webcamRef}
                   screenshotFormat="image/jpeg"
-                  width={200}
+                  width="100%"
+                  videoConstraints={videoConstraints} // <--- Apply Size Limit
                 />
               )}
               <br />
-              <Button variant="secondary" size="sm" onClick={capture} type="button" className="mt-2">
-                Capture Photo
-              </Button>
-              <Button variant="danger" size="sm" onClick={() => setPhoto(null)} type="button" className="mt-2 ms-2">
-                Retake
-              </Button>
+              <div className="mt-2">
+                {!photo && (
+                    <Button variant="secondary" size="sm" onClick={capture} type="button">
+                        Capture Photo
+                    </Button>
+                )}
+                {photo && (
+                    <Button variant="danger" size="sm" onClick={() => setPhoto(null)} type="button" className="ms-2">
+                        Retake
+                    </Button>
+                )}
+              </div>
             </div>
 
-            <Button variant="primary" type="submit" className="w-100">Generate Pass</Button>
+            {/* GENERATE BUTTON WITH LOADER */}
+            <Button variant="primary" type="submit" className="w-100" disabled={loading}>
+              {loading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Generating Pass...
+                </>
+              ) : (
+                'Generate Pass'
+              )}
+            </Button>
           </Form>
         </Col>
 
-        {/* RIGHT: The Printable Pass */}
-        <Col md={6} className="d-flex flex-column align-items-center">
+        <Col md={6} className="d-flex flex-column align-items-center mt-4 mt-md-0">
           <h3>2. Digital Badge</h3>
           {generatedQR ? (
             <>
-              {/* <--- 3. This div gets printed */}
               <div ref={componentRef} className="border border-dark p-4 m-3 text-center" style={{ width: '300px', backgroundColor: 'white' }}>
                 <h4 className="text-uppercase fw-bold mb-3">Visitor Pass</h4>
-                {photo && <img src={photo} alt="Visitor" style={{ width: '100px', borderRadius: '50%', marginBottom: '10px' }} />}
+                {photo && <img src={photo} alt="Visitor" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '50%', marginBottom: '10px' }} />}
                 <div className="my-2">
                   <QRCode value={generatedQR} size={120} />
                 </div>
@@ -118,11 +148,12 @@ const AddVisitor = () => {
                 <p className="mt-3 text-muted" style={{ fontSize: '12px' }}>Authorized Entry</p>
               </div>
 
-              {/* <--- 4. Correct print handler */}
               <Button variant="success" onClick={handlePrint}>Download / Print PDF</Button>
             </>
           ) : (
-             <p className="text-muted">Fill details to see pass preview.</p>
+             <div className="text-muted p-5 border border-dashed w-100 text-center">
+                {loading ? 'Processing...' : 'Fill details to see pass preview.'}
+             </div>
           )}
         </Col>
       </Row>
