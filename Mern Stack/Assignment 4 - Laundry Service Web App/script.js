@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize emailJS with your public key (replace placeholder).
   if (window.emailjs) {
-    emailjs.init('YOUR_PUBLIC_KEY');
+    emailjs.init('nMI_i8-9LaAGeBAqm')
   }
 
   const services = {
@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       if (!window.emailjs) throw new Error('EmailJS not loaded');
-      await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
-        to_email: 'YOUR_EMAIL_ADDRESS',
+      await emailjs.send('service_ykd34eg', 'template_yxgyxxo', {
+        to_email: 'noreply.wecodeblooded@gmail.com',
         customer_name: fullName,
         customer_email: email,
         customer_phone: phone,
@@ -115,26 +115,72 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!cart.size) {
       cartContainer.innerHTML = '<div class="empty-state">No items added yet</div>';
       totalAmountEl.textContent = '₹0.00';
-      return;
+    } else {
+      const header = document.createElement('div');
+      header.className = 'cart-header';
+      header.innerHTML = '<span>S.No</span><span>Service Name</span><span>Qty</span><span>Price</span>';
+      cartContainer.appendChild(header);
+
+      let index = 1;
+      cart.forEach((qty, key) => {
+        const service = services[key];
+        const row = document.createElement('div');
+        row.className = 'cart-row';
+        row.innerHTML = `
+          <span>${index}</span>
+          <span>${service.name}</span>
+          <span class="qty-controls">
+            <button class="qty-btn" data-action="decrease" data-service="${key}">-</button>
+            <span class="qty-display">${qty}</span>
+            <button class="qty-btn" data-action="increase" data-service="${key}">+</button>
+          </span>
+          <span>₹${(service.price * qty).toFixed(2)}</span>
+        `;
+        cartContainer.appendChild(row);
+        index += 1;
+      });
+
+      totalAmountEl.textContent = `₹${getTotal().toFixed(2)}`;
+
+      // Add event listeners to +/- buttons
+      const qtyBtns = cartContainer.querySelectorAll('.qty-btn');
+      qtyBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const serviceKey = btn.dataset.service;
+          const action = btn.dataset.action;
+          if (action === 'increase') {
+            addToCart(serviceKey);
+          } else if (action === 'decrease') {
+            removeFromCart(serviceKey);
+          }
+          renderCart();
+        });
+      });
     }
 
-    const header = document.createElement('div');
-    header.className = 'cart-header';
-    header.innerHTML = '<span>S.No</span><span>Service Name</span><span>Qty</span><span>Price</span>';
-    cartContainer.appendChild(header);
+    // Update button states
+    updateButtonStates();
+  }
 
-    let index = 1;
-    cart.forEach((qty, key) => {
-      const service = services[key];
-      const row = document.createElement('div');
-      row.className = 'cart-row';
-      row.innerHTML = `<span>${index}</span><span>${service.name}</span><span>${qty}</span><span>₹${(service.price * qty).toFixed(2)}</span>`;
-      cartContainer.appendChild(row);
-      index += 1;
+  function updateButtonStates() {
+    const serviceRows = document.querySelectorAll('.service-row');
+    serviceRows.forEach(row => {
+      const serviceKey = row.dataset.service;
+      const addBtn = row.querySelector('[data-action="add"]');
+      const removeBtn = row.querySelector('[data-action="remove"]');
+      
+      if (cart.has(serviceKey)) {
+        // Item is in cart - hide Add button, show Remove button
+        addBtn.style.display = 'none';
+        removeBtn.style.display = 'inline-block';
+      } else {
+        // Item not in cart - show Add button, hide Remove button
+        addBtn.style.display = 'inline-block';
+        removeBtn.style.display = 'none';
+      }
     });
-
-    totalAmountEl.textContent = `₹${getTotal().toFixed(2)}`;
   }
 
   renderCart();
+  updateButtonStates();
 });
