@@ -1,64 +1,38 @@
 const http = require('http');
 const fs = require('fs');
-const path = require('path');
-
-const PORT = 3000;
-
-// Helper function to serve files asynchronously
-// This keeps our code modular and dry (Don't Repeat Yourself)
-const serveFile = (res, filePath, contentType, statusCode = 200) => {
-    // Construct the absolute path to the file inside the 'public' folder
-    const fullPath = path.join(__dirname, 'public', filePath);
-
-    // Read the file from the file system
-    fs.readFile(fullPath, (err, data) => {
-        if (err) {
-            // If the file is not found or cannot be read, return a 500 error
-            res.writeHead(500, { 'Content-Type': 'text/plain' });
-            res.end('500 - Internal Server Error');
-        } else {
-            // Write the correct status code (200 or 404) and content type (HTML or CSS)
-            res.writeHead(statusCode, { 'Content-Type': contentType });
-            res.end(data);
-        }
-    });
-};
 
 const server = http.createServer((req, res) => {
-    // Normalize URL to lower case to handle variations like /Home
-    const url = req.url.toLowerCase();
-
-    console.log(`Request received for: ${url}`); // Log requests to console for testing
-
-    // Routing Logic using Switch Case
-    switch (url) {
-        case '/':
-        case '/home':
-            serveFile(res, 'index.html', 'text/html');
-            break;
-
-        case '/about':
-            serveFile(res, 'about.html', 'text/html');
-            break;
-
-        case '/contact':
-            serveFile(res, 'contact.html', 'text/html');
-            break;
-
-        // We must explicitly serve the CSS file when the HTML pages request it
-        case '/style.css':
-            serveFile(res, 'style.css', 'text/css');
-            break;
-
-        default:
-            // Handle invalid routes with the custom 404 page and 404 status code
-            serveFile(res, '404.html', 'text/html', 404);
-            break;
+    let url = req.url;
+    
+    console.log('Request for: ' + url);
+    
+    if (url === '/' || url === '/home' || url === '/Home') {
+        let data = fs.readFileSync('./public/index.html');
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(data);
+    }
+    else if(url === '/about' || url === '/About') {
+        let data = fs.readFileSync('./public/about.html');
+        res.writeHead(200);
+        res.end(data);
+    }
+    else if (url === '/contact') {
+        let data = fs.readFileSync('./public/contact.html');
+        res.end(data);
+    }
+    else if (url === '/style.css') {
+        let data = fs.readFileSync('./public/style.css');
+        res.writeHead(200, { 'Content-Type': 'text/css' });
+        res.end(data);
+    }
+    else {
+        // show 404 page
+        let data = fs.readFileSync('./public/404.html');
+        res.writeHead(404);
+        res.end(data);
     }
 });
 
-// Start the server
-server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    console.log('Press Ctrl+C to stop the server');
+server.listen(3000, () => {
+    console.log('Server running on port 3000');
 });
