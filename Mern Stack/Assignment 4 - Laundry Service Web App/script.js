@@ -1,10 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize emailJS with your public key (replace placeholder).
-  if (window.emailjs) {
-    emailjs.init('nMI_i8-9LaAGeBAqm')
-  }
-
-  const services = {
+document.addEventListener('DOMContentLoaded', function () {
+  // simple data for servics
+  var services = {
     'dry-cleaning': { name: 'Dry Cleaning', price: 200 },
     'wash-fold': { name: 'Wash & Fold', price: 100 },
     'ironing': { name: 'Ironing', price: 30 },
@@ -13,174 +9,168 @@ document.addEventListener('DOMContentLoaded', () => {
     'wedding-dress': { name: 'Wedding Dress Cleaning', price: 2800 }
   };
 
-  const cart = new Map();
-  const cartContainer = document.getElementById('cart-items');
-  const totalAmountEl = document.getElementById('total-amount');
-  const statusEl = document.getElementById('booking-status');
-  const newsletterStatusEl = document.getElementById('newsletter-status');
+  // beginer cart: plain object {key: qty}
+  var cartData = {};
+  var cartDiv = document.getElementById('cart-items');
+  var totalDiv = document.getElementById('total-amount');
+  var msgBooking = document.getElementById('booking-status');
+  var msgNewsletter = document.getElementById('newsletter-status');
 
-  const serviceButtons = document.querySelectorAll('.service-row .ghost-btn');
-  serviceButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const serviceKey = btn.closest('.service-row').dataset.service;
-      const action = btn.dataset.action;
-      if (!services[serviceKey]) return;
-      if (action === 'add') addToCart(serviceKey);
-      if (action === 'remove') removeFromCart(serviceKey);
+  // add/remove buttuns in service list
+  var svcBtns = document.querySelectorAll('.service-item .btn2');
+  for (var i = 0; i < svcBtns.length; i++) {
+    svcBtns[i].addEventListener('click', function () {
+      var row = this.closest('.service-item');
+      var key = row.getAttribute('data-service');
+      var act = this.getAttribute('data-action');
+      if (!services[key]) return;
+      if (act === 'add') addToCart(key);
+      if (act === 'remove') removeFromCart(key);
       renderCart();
     });
-  });
+  }
 
-  document.getElementById('cta-scroll').addEventListener('click', () => {
-    document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
-  });
+  // CTA scroll
+  var cta = document.getElementById('cta-scroll');
+  if (cta) {
+    cta.addEventListener('click', function () {
+      var target = document.getElementById('booking');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
 
-  document.getElementById('booking-form').addEventListener('submit', async (e) => {
+  // bookin form
+  var bookForm = document.getElementById('booking-form');
+  bookForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (!cart.size) {
-      statusEl.textContent = 'Please add at least one service before booking.';
-      statusEl.style.color = '#d94646';
+    if (Object.keys(cartData).length === 0) {
+      msgBooking.textContent = 'Please add at least one service before booking.';
+      msgBooking.style.color = '#d94646';
       return;
     }
 
-    const formData = new FormData(e.target);
-    const fullName = formData.get('fullName');
-    const email = formData.get('email');
-    const phone = formData.get('phone');
+    var formData = new FormData(bookForm);
+    var fullName = formData.get('fullName');
+    var email = formData.get('email');
+    var phone = formData.get('phone');
 
-    const orderLines = [...cart.entries()].map(([key, qty], index) => {
-      const item = services[key];
-      return `${index + 1}. ${item.name} x${qty} - ₹${(item.price * qty).toFixed(2)}`;
-    }).join('\n');
-
-    const total = getTotal();
-    statusEl.textContent = 'Sending booking...';
-    statusEl.style.color = '#4b5563';
-
-    try {
-      if (!window.emailjs) throw new Error('EmailJS not loaded');
-      await emailjs.send('service_ykd34eg', 'template_yxgyxxo', {
-        to_email: 'noreply.wecodeblooded@gmail.com',
-        customer_name: fullName,
-        customer_email: email,
-        customer_phone: phone,
-        order_details: orderLines,
-        order_total: `₹${total.toFixed(2)}`
-      });
-      statusEl.textContent = 'Thank you for booking the service. We will get back to you soon!';
-      statusEl.style.color = '#1b61d1';
-      e.target.reset();
-      cart.clear();
-      renderCart();
-    } catch (err) {
-      statusEl.textContent = 'Could not send email. Please check EmailJS keys and try again.';
-      statusEl.style.color = '#d94646';
-      console.error(err);
+    var lines = [];
+    var index = 1;
+    for (var k in cartData) {
+      var item = services[k];
+      var qty = cartData[k];
+      lines.push(index + '. ' + item.name + ' x' + qty + ' - ₹' + (item.price * qty).toFixed(2));
+      index++;
     }
+
+    var total = getTotal();
+    msgBooking.textContent = 'Processing booking...';
+    msgBooking.style.color = '#4b5563';
+
+    // show confirmation
+    setTimeout(function() {
+      var orderSummary = 'Booking Confirmed!\n\n';
+      orderSummary += 'Name: ' + fullName + '\n';
+      orderSummary += 'Email: ' + email + '\n';
+      orderSummary += 'Phone: ' + phone + '\n\n';
+      orderSummary += 'Order Details:\n' + lines.join('\n') + '\n\n';
+      orderSummary += 'Total: ₹' + total.toFixed(2);
+      
+      alert(orderSummary);
+      
+      msgBooking.textContent = 'Thank you for booking the service. We will get back to you soon!';
+      msgBooking.style.color = '#1b61d1';
+      bookForm.reset();
+      cartData = {};
+      renderCart();
+    }, 500);
   });
 
-  document.getElementById('newsletter-form').addEventListener('submit', (e) => {
+  // newsletter
+  var newsForm = document.getElementById('newsletter-form');
+  newsForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    newsletterStatusEl.textContent = 'Thanks for subscribing!';
-    newsletterStatusEl.style.color = '#fff';
-    e.target.reset();
+    msgNewsletter.textContent = 'Thanks for subscribing!';
+    msgNewsletter.style.color = '#fff';
+    newsForm.reset();
   });
 
   function addToCart(key) {
-    const current = cart.get(key) || 0;
-    cart.set(key, current + 1);
+    if (!cartData[key]) cartData[key] = 1;
+      else cartData[key] = cartData[key] + 1;
   }
 
   function removeFromCart(key) {
-    if (!cart.has(key)) return;
-    const current = cart.get(key);
-    if (current <= 1) {
-      cart.delete(key);
-    } else {
-      cart.set(key, current - 1);
-    }
+    if (!cartData[key]) return;
+    cartData[key] = cartData[key] - 1;
+    if (cartData[key] <= 0) delete cartData[key];
   }
 
   function getTotal() {
-    let total = 0;
-    cart.forEach((qty, key) => {
-      const service = services[key];
-      total += service.price * qty;
-    });
+    var total = 0;
+    for (var k in cartData) {
+      var qty = cartData[k];
+      var svc = services[k];
+      total += svc.price * qty;
+    }
     return total;
   }
 
   function renderCart() {
-    cartContainer.innerHTML = '';
-    if (!cart.size) {
-      cartContainer.innerHTML = '<div class="empty-state">No items added yet</div>';
-      totalAmountEl.textContent = '₹0.00';
+    var keys = Object.keys(cartData);
+    if (keys.length === 0) {
+      cartDiv.innerHTML = '<div class="empty-state">No items added yet</div>';
+      totalDiv.textContent = '₹0.00';
     } else {
-      const header = document.createElement('div');
-      header.className = 'cart-header';
-      header.innerHTML = '<span>S.No</span><span>Service Name</span><span>Qty</span><span>Price</span>';
-      cartContainer.appendChild(header);
+      var html = '<div class="cart-header"><span>S.No</span><span>Service Name</span><span>Qty</span><span>Price</span></div>';
+      var i = 1;
+      for (var k in cartData) {
+        var svc = services[k];
+        var qty = cartData[k];
+        html += '<div class="cart-row">' +
+          '<span>' + i + '</span>' +
+          '<span>' + svc.name + '</span>' +
+          '<span class="qty-controls">' +
+            '<button class="qty-btn" data-action="decrease" data-service="' + k + '">-</button>' +
+            '<span class="qty-display">' + qty + '</span>' +
+            '<button class="qty-btn" data-action="increase" data-service="' + k + '">+</button>' +
+          '</span>' +
+          '<span>₹' + (svc.price * qty).toFixed(2) + '</span>' +
+        '</div>';
+        i++;
+      }
+      cartDiv.innerHTML = html;
+      totalDiv.textContent = '₹' + getTotal().toFixed(2);
 
-      let index = 1;
-      cart.forEach((qty, key) => {
-        const service = services[key];
-        const row = document.createElement('div');
-        row.className = 'cart-row';
-        row.innerHTML = `
-          <span>${index}</span>
-          <span>${service.name}</span>
-          <span class="qty-controls">
-            <button class="qty-btn" data-action="decrease" data-service="${key}">-</button>
-            <span class="qty-display">${qty}</span>
-            <button class="qty-btn" data-action="increase" data-service="${key}">+</button>
-          </span>
-          <span>₹${(service.price * qty).toFixed(2)}</span>
-        `;
-        cartContainer.appendChild(row);
-        index += 1;
-      });
-
-      totalAmountEl.textContent = `₹${getTotal().toFixed(2)}`;
-
-      // Add event listeners to +/- buttons
-      const qtyBtns = cartContainer.querySelectorAll('.qty-btn');
-      qtyBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const serviceKey = btn.dataset.service;
-          const action = btn.dataset.action;
-          if (action === 'increase') {
-            addToCart(serviceKey);
-          } else if (action === 'decrease') {
-            removeFromCart(serviceKey);
-          }
+      // attach +/- handelers inside cart
+      var btns = cartDiv.querySelectorAll('.qty-btn');
+      for (var b = 0; b < btns.length; b++) {
+        btns[b].addEventListener('click', function () {
+          var k = this.getAttribute('data-service');
+          var a = this.getAttribute('data-action');
+          if (a === 'increase') addToCart(k);
+          else removeFromCart(k);
           renderCart();
         });
-      });
+      }
     }
 
-    // Update button states
-    updateButtonStates();
-  }
-
-  function updateButtonStates() {
-    const serviceRows = document.querySelectorAll('.service-row');
-    serviceRows.forEach(row => {
-      const serviceKey = row.dataset.service;
-      const addBtn = row.querySelector('[data-action="add"]');
-      const removeBtn = row.querySelector('[data-action="remove"]');
-      
-      if (cart.has(serviceKey)) {
-        // Item is in cart - hide Add button, show Remove button
+    // update add/remove buttens visibility
+    var rows = document.querySelectorAll('.service-item');
+    for (var r = 0; r < rows.length; r++) {
+      var k3 = rows[r].getAttribute('data-service');
+      var addBtn = rows[r].querySelector('[data-action="add"]');
+      var remBtn = rows[r].querySelector('[data-action="remove"]');
+      if (cartData[k3]) {
         addBtn.style.display = 'none';
-        removeBtn.style.display = 'inline-block';
+        remBtn.style.display = 'inline-block';
       } else {
-        // Item not in cart - show Add button, hide Remove button
         addBtn.style.display = 'inline-block';
-        removeBtn.style.display = 'none';
+        remBtn.style.display = 'none';
       }
-    });
+    }
   }
 
+  // initail render
   renderCart();
-  updateButtonStates();
 });

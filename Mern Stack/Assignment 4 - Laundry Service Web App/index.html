@@ -4,141 +4,137 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Laundry Service Web App</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
 <body>
-  <header class="topbar">
+  <header class="header-top">
     <div class="logo">Logo</div>
-    <nav class="nav-links">
+    <nav class="nav-menu">
       <a href="#home">Home</a>
       <a href="#services">Services</a>
       <a href="#about">About Us</a>
       <a href="#contact">Contact Us</a>
     </nav>
-    <div class="user-pill">Username</div>
+    <div class="user-box">Username</div>
   </header>
 
   <main id="home">
-    <section class="hero">
-      <div class="hero-copy">
+    <section class="section1">
+      <div class="text-side">
         <h1>Revitalize Your Clothes with Expert Laundry Services!</h1>
         <p>From premium dry cleaning to swift wash and fold, we deliver care and convenience. Schedule a pickup and rediscover the freshness of your clothes today!</p>
-        <button id="cta-scroll" class="primary-btn">Book a service today!</button>
+        <button id="cta-scroll" class="btn1">Book a service today!</button>
       </div>
-      <div class="hero-visual">
+      <div class="image-side">
         <img src="https://t3.ftcdn.net/jpg/06/27/91/98/360_F_627919863_5FibESm3DEK3xvB8jGJSwg5lbQhUexlr.jpg" alt="Laundry machine illustration">
       </div>
     </section>
   </main>
 
-  <section class="achievements" id="about">
-    <div class="achievement-item">
-      <div class="achievement-number">15+</div>
+  <section class="stats-bar" id="about">
+    <div class="stat-item">
+      <div class="stat-number">15+</div>
       <p>Laundry Services</p>
     </div>
-    <div class="achievement-item">
-      <div class="achievement-number">240+</div>
+    <div class="stat-item">
+      <div class="stat-number">240+</div>
       <p>Happy Customers</p>
     </div>
-    <div class="achievement-item">
-      <div class="achievement-number">2+ Yrs</div>
+    <div class="stat-item">
+      <div class="stat-number">2+ Yrs</div>
       <p>Experience</p>
     </div>
   </section>
 
-  <section class="booking" id="services">
-    <div class="booking-left">
+  <section class="section2" id="services">
+    <div class="left-side">
       <h2>Our Services</h2>
       <p class="subtext">Click on the add to cart button to add the services to your cart</p>
-      <div class="service-list">
-        <div class="service-row" data-service="dry-cleaning">
-          <div class="service-info">
+      <div class="service-box">
+        <div class="service-item" data-service="dry-cleaning">
+          <div class="service-details">
             <span class="icon">🧺</span>
             <div>
               <h3>Dry Cleaning</h3>
               <p class="price">₹200.00</p>
             </div>
           </div>
-          <div class="service-actions">
-            <button class="ghost-btn remove" data-action="remove">Remove Item</button>
-            <button class="ghost-btn" data-action="add">Add Item</button>
+          <div class="button-group">
+            <button class="btn2 remove" data-action="remove">Remove Item</button>
+            <button class="btn2" data-action="add">Add Item</button>
           </div>
         </div>
-        <div class="service-row" data-service="wash-fold">
-          <div class="service-info">
+        <div class="service-item" data-service="wash-fold">
+          <div class="service-details">
             <span class="icon">🧼</span>
             <div>
               <h3>Wash & Fold</h3>
               <p class="price">₹100.00</p>
             </div>
           </div>
-          <div class="service-actions">
-            <button class="ghost-btn remove" data-action="remove">Remove Item</button>
-            <button class="ghost-btn" data-action="add">Add Item</button>
+          <div class="button-group">
+            <button class="btn2 remove" data-action="remove">Remove Item</button>
+            <button class="btn2" data-action="add">Add Item</button>
           </div>
         </div>
-        <div class="service-row" data-service="ironing">
-          <div class="service-info">
+        <div class="service-item" data-service="ironing">
+          <div class="service-details">
             <span class="icon">🧥</span>
             <div>
               <h3>Ironing</h3>
               <p class="price">₹30.00</p>
             </div>
           </div>
-          <div class="service-actions">
-            <button class="ghost-btn remove" data-action="remove">Remove Item</button>
-            <button class="ghost-btn" data-action="add">Add Item</button>
+          <div class="button-group">
+            <button class="btn2 remove" data-action="remove">Remove Item</button>
+            <button class="btn2" data-action="add">Add Item</button>
           </div>
         </div>
-        <div class="service-row" data-service="stain-removal">
-          <div class="service-info">
+        <div class="service-item" data-service="stain-removal">
+          <div class="service-details">
             <span class="icon">🧴</span>
             <div>
               <h3>Stain Removal</h3>
               <p class="price">₹500.00</p>
             </div>
           </div>
-          <div class="service-actions">
-            <button class="ghost-btn remove" data-action="remove">Remove Item</button>
-            <button class="ghost-btn" data-action="add">Add Item</button>
+          <div class="button-group">
+            <button class="btn2 remove" data-action="remove">Remove Item</button>
+            <button class="btn2" data-action="add">Add Item</button>
           </div>
         </div>
-        <div class="service-row" data-service="leather-cleaning">
-          <div class="service-info">
+        <div class="service-item" data-service="leather-cleaning">
+          <div class="service-details">
             <span class="icon">🧤</span>
             <div>
               <h3>Leather & Suede Cleaning</h3>
               <p class="price">₹999.00</p>
             </div>
           </div>
-          <div class="service-actions">
-            <button class="ghost-btn remove" data-action="remove">Remove Item</button>
-            <button class="ghost-btn" data-action="add">Add Item</button>
+          <div class="button-group">
+            <button class="btn2 remove" data-action="remove">Remove Item</button>
+            <button class="btn2" data-action="add">Add Item</button>
           </div>
         </div>
-        <div class="service-row" data-service="wedding-dress">
-          <div class="service-info">
+        <div class="service-item" data-service="wedding-dress">
+          <div class="service-details">
             <span class="icon">👗</span>
             <div>
               <h3>Wedding Dress Cleaning</h3>
               <p class="price">₹2800.00</p>
             </div>
           </div>
-          <div class="service-actions">
-            <button class="ghost-btn remove" data-action="remove">Remove Item</button>
-            <button class="ghost-btn" data-action="add">Add Item</button>
+          <div class="button-group">
+            <button class="btn2 remove" data-action="remove">Remove Item</button>
+            <button class="btn2" data-action="add">Add Item</button>
           </div>
         </div>
       </div>
       <p class="info-tip">Add the items to the cart and book now</p>
     </div>
 
-    <div class="booking-right" id="booking">
-      <div class="cart-card">
+    <div class="right-side" id="booking">
+      <div class="cart-box">
         <h3>Added Items</h3>
         <div class="cart-table" id="cart-items">
           <div class="cart-header">
@@ -155,7 +151,7 @@
         </div>
       </div>
 
-      <div class="form-card">
+      <div class="form-box">
         <h3>Book Now</h3>
         <form id="booking-form">
           <label for="fullName">Full Name</label>
@@ -172,7 +168,7 @@
             </div>
           </div>
 
-          <button type="submit" class="primary-btn full">Book now</button>
+          <button type="submit" class="btn1 full">Book now</button>
           <p class="status" id="booking-status"></p>
         </form>
       </div>
@@ -202,21 +198,21 @@
     </div>
   </section>
 
-  <section class="newsletter" id="newsletter">
-    <div class="newsletter-inner">
+  <section class="section3" id="newsletter">
+    <div class="newsletter-box">
       <div>
         <h2>Subscribe to our newsletter.</h2>
       </div>
       <form id="newsletter-form" class="newsletter-form">
         <input type="text" name="subscriberName" placeholder="Full name" required>
         <input type="email" name="subscriberEmail" placeholder="Email" required>
-        <button type="submit" class="primary-btn">Subscribe</button>
+        <button type="submit" class="btn1">Subscribe</button>
       </form>
       <p class="status" id="newsletter-status"></p>
     </div>
   </section>
 
-  <footer class="footer">
+  <footer class="bottom-bar">
     <div class="footer-col">
       <div class="logo">Logo</div>
       <p>About us</p>
