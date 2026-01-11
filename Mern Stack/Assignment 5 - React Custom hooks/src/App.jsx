@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback } from 'react';
 import useFetch from './hooks/useFetch';
 
-const buildMockPhotos = () => {
+const makeMockPhotos = () => {
   const total = 120;
   const labels = [
     'accusamus beatae ad facilis cum similique',
@@ -18,7 +18,7 @@ const buildMockPhotos = () => {
     'odio enim voluptatem quidem aut nihil',
   ];
 
-  const palette = [
+  const colors = [
     '#78c26d',
     '#5e1ea8',
     '#22e78f',
@@ -33,29 +33,22 @@ const buildMockPhotos = () => {
     '#b3d47c',
   ];
 
-  const items = [];
+  const list = [];
   for (let i = 0; i < total; i += 1) {
-    const color = palette[i % palette.length];
-    const label = labels[i % labels.length];
-    items.push({ id: `p-${i + 1}`, title: label, color });
+    list.push({
+      id: `p-${i + 1}`,
+      title: labels[i % labels.length],
+      color: colors[i % colors.length],
+    });
   }
-  return items;
+  return list;
 };
 
-const mockPhotos = buildMockPhotos();
+const mockPhotos = makeMockPhotos();
 
 function App() {
-  const [isOffline, setIsOffline] = useState(
-    typeof navigator !== 'undefined' ? !navigator.onLine : false
-  );
-
   const checkConnectivity = useCallback(async () => {
-    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-      throw new Error('Network offline. Check your connection.');
-    }
-
     try {
-      // Tiny connectivity probe used by Chrome; no content, low overhead.
       await fetch('https://www.gstatic.com/generate_204', {
         method: 'GET',
         mode: 'no-cors',
@@ -67,41 +60,14 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
-    const handleOnline = () => setIsOffline(false);
-    const handleOffline = () => setIsOffline(true);
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  const loadPhotos = useCallback(() => {
-    return new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        try {
-          await checkConnectivity();
-          if (isOffline) {
-            reject(new Error('Network offline. Check your connection.'));
-            return;
-          }
-          resolve(mockPhotos);
-        } catch (err) {
-          reject(err);
-        }
-      }, 250);
-    });
-  }, [checkConnectivity, isOffline]);
+  const loadPhotos = useCallback(async () => {
+    await new Promise((r) => setTimeout(r, 250));
+    await checkConnectivity();
+    return mockPhotos;
+  }, [checkConnectivity]);
 
   const { data, loading, error, refetch } = useFetch(loadPhotos);
-
-  const photos = useMemo(() => {
-    if (!Array.isArray(data)) return [];
-    return data;
-  }, [data]);
+  const photos = Array.isArray(data) ? data : [];
 
   if (loading) {
     return (
@@ -130,7 +96,7 @@ function App() {
     <div className="page">
       <header className="hero">
         <h1>Photos</h1>
-        <p className="lede">Dummy placeholders to mirror the provided layout.</p>
+        <p className="lede">Simple placeholder grid using a custom hook.</p>
         <div className="controls">
           <button className="button" onClick={refetch}>Reload data</button>
         </div>

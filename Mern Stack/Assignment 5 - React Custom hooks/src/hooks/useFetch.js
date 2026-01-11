@@ -1,14 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-// Flexible data loader: works with either a URL (fetch) or a function that returns data/promise.
-const useFetch = (source, options) => {
-  const immediate = options?.immediate ?? true;
-  const config = useMemo(() => options?.config || null, [options?.config]);
+const useFetch = (source, options = {}) => {
+  const { immediate = true, config = {} } = options;
 
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(Boolean(immediate));
+  const [loading, setLoading] = useState(immediate);
   const [error, setError] = useState(null);
-  const controllerRef = useRef();
+  const controllerRef = useRef(null);
 
   const fetchData = useCallback(async () => {
     if (!source) {
@@ -32,7 +30,7 @@ const useFetch = (source, options) => {
       } else if (typeof source === 'string') {
         const response = await fetch(source, {
           signal: controller.signal,
-          ...(config || {}),
+          ...config,
         });
 
         if (!response.ok) {
@@ -46,23 +44,24 @@ const useFetch = (source, options) => {
 
       setData(result);
     } catch (err) {
-      if (err.name === 'AbortError') return;
+      if (err.name === 'AbortError') {
+        setLoading(false);
+        return;
+      }
       setError(err);
       setData(null);
     } finally {
-      if (!controller.signal.aborted) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
   }, [source, config]);
 
   useEffect(() => {
-    if (immediate && source) {
+    if (immediate) {
       fetchData();
     }
 
     return () => controllerRef.current?.abort();
-  }, [fetchData, immediate, source]);
+  }, [fetchData, immediate]);
 
   return {
     data,
