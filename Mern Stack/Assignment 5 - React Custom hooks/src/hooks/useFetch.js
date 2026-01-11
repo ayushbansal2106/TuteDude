@@ -53,7 +53,7 @@ const useFetch = (source, options = {}) => {
     } finally {
       setLoading(false);
     }
-  }, [source, config]);
+  }, [source]);
 
   useEffect(() => {
     if (immediate) {

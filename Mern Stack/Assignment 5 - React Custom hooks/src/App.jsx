@@ -48,16 +48,10 @@ const mockPhotos = makeMockPhotos();
 
 function App() {
   const checkConnectivity = useCallback(async () => {
-    try {
-      await fetch('https://www.gstatic.com/generate_204', {
-        method: 'GET',
-        mode: 'no-cors',
-        cache: 'no-store',
-      });
-      return true;
-    } catch (err) {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
       throw new Error('Network offline. Check your connection.');
     }
+    return true;
   }, []);
 
   const loadPhotos = useCallback(async () => {
